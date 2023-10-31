@@ -3,12 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - brickGround
+  - StairGate
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - BrickStairLayer
   - Water
   - UI
   - 

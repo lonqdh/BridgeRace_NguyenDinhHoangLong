@@ -2,17 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : Singleton<LevelManager>
 {
-    // Start is called before the first frame update
-    void Start()
+    public List<Level> levels = new List<Level>();
+    public Player player;
+    //public Bot bot;
+    Level currentLevel;
+
+    int level = 1;
+
+    private void Start()
     {
-        
+        LoadLevel();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void LoadLevel()
     {
-        
+        LoadLevel(level);
+        OnInit();
     }
+
+    public void LoadLevel(int levelIndex)
+    {
+        if(currentLevel != null)
+        {
+            Destroy(currentLevel.gameObject);
+        }
+
+        currentLevel = Instantiate(levels[levelIndex - 1]);
+    }
+
+    public void OnInit()
+    {
+        //bot.transform.position = currentLevel.startPoint.position;
+        player.transform.position = currentLevel.startPoint.position;
+        player.OnInit();
+        //bot.OnInit();
+    }
+
+
 }
