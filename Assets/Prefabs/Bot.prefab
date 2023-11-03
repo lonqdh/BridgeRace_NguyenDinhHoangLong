@@ -114,7 +114,7 @@ Transform:
   m_GameObject: {fileID: 4920833232332274638}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.21, y: 4.17, z: 2.3540027}
+  m_LocalPosition: {x: -10.129013, y: 3.4842548, z: -4.0886726}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -241,7 +241,10 @@ MonoBehaviour:
     m_Bits: 8
   brickCharList: []
   agent: {fileID: 1569962949552226801}
-  level: {fileID: 0}
+  level: {fileID: 3320003626409766597, guid: 4263e78f1e43afe45b4506df4d7c4470, type: 3}
+  brickGroundLayer:
+    serializedVersion: 2
+    m_Bits: 64
   stage: {fileID: 7326438167090313642, guid: b81a64d3424995f47b34e09fa82ada09, type: 3}
 --- !u!54 &3888038687171138448
 Rigidbody:

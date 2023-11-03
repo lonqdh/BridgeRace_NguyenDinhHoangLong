@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Character : ColorGameObject
@@ -10,7 +11,8 @@ public class Character : ColorGameObject
     [SerializeField] private BrickChar brickChar;
     [SerializeField] private float vector;
     [SerializeField] public LayerMask brickStairLayer;
-    //[SerializeField] private float gravityScale;
+
+    //tao bien currentStage de check stage hien tai
 
     public List<BrickChar> brickCharList = new List<BrickChar>();
 
@@ -26,7 +28,6 @@ public class Character : ColorGameObject
 
     protected virtual void Update()
     {
-        //rigidbody.AddForce(Physics.gravity * gravityScale, ForceMode.Acceleration);
         DistributeBricks();
     }
 
@@ -53,10 +54,13 @@ public class Character : ColorGameObject
     {
         if (other.gameObject.tag == "brickGround")
         {
-            if (other.gameObject.GetComponent<BrickGround>().colorType == this.colorType)
+            BrickGround brickGround = other.GetComponent<BrickGround>();
+            if (brickGround.colorType == this.colorType)
             {
                 AddBrick();
-                Destroy(other.gameObject);
+                Destroy(brickGround.gameObject);
+                Stage.Instance.bricks.Remove(brickGround);
+                
             }
         }
     }

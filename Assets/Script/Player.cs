@@ -7,17 +7,24 @@ public class Player : Character
 {
     [SerializeField] private FloatingJoystick joystick;
     private Vector3 moveVector;
+    private bool hasInit;
 
     protected override void Update()
     {
-        Move();
-        //this.GetComponent<Rigidbody>().AddForce(Physics.gravity * 10, ForceMode.Acceleration);
-        base.Update();
+        if (hasInit)
+        {
+            Move();
+            //this.GetComponent<Rigidbody>().AddForce(Physics.gravity * 10, ForceMode.Acceleration);
+            base.Update();
+        }
+
     }
 
     public void OnInit()
     {
-
+        joystick = LevelManager.Instance.joystick;
+        CameraFollow.Instance.target = this.transform;
+        hasInit = true;
     }
 
     public override void Move()
@@ -50,6 +57,6 @@ public class Player : Character
         //}
 
     }
-   
+
 
 }

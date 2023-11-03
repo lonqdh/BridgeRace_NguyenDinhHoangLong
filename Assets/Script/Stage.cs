@@ -5,7 +5,7 @@ using System.Drawing;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-public class Stage : MonoBehaviour
+public class Stage : Singleton<Stage>
 {
     public GameObject bricksGroundPrefab;
     public int gridX;
@@ -14,10 +14,12 @@ public class Stage : MonoBehaviour
     public Vector3 gridOrigin = Vector3.zero;
     public Transform spawnPosition; // the spawn position of the grid
     public Transform brickGroundParent; // dung de organize bricks spawned in the hierarchy
-    public List<ColorType> availableColors;
+    /*[NonSerialized] */public List<Character> availableChar = new List<Character>();
+
 
     public List<BrickGround> bricks = new List<BrickGround>(); // dung de luu 1 list cac vien gach cua stage
 
+    public List<BrickGround> bricksToRespawn = new List<BrickGround>(); // dung de luu 1 list cac vien gach da duoc nhat va trai len cau`
 
     private void Start()
     {
@@ -27,7 +29,6 @@ public class Stage : MonoBehaviour
     private void SpawnGrid()
     {
         int colorIndex = 0; // Initialize the color index
-
         //spawn bricks in a grid from left to right, the first column is at the left
         for (int i = 0; i < gridX; i++) //gridX is length
         {
@@ -35,11 +36,11 @@ public class Stage : MonoBehaviour
             {
                 Vector3 positionToSpawn = spawnPosition.position + new Vector3(i * gridSpacingOffset, 0, j * gridSpacingOffset);
 
-                ColorType selectedColor = availableColors[colorIndex]; // Get the color from the list
+                ColorType selectedColor = availableChar[colorIndex].colorType; // Get the color from the list
 
                 PickAndSpawn(positionToSpawn, Quaternion.identity, selectedColor);
 
-                colorIndex = (colorIndex + 1) % availableColors.Count; // Rotate through available colors
+                colorIndex = (colorIndex + 1) % availableChar.Count; // Rotate through available colors
             }
         }
     }
@@ -66,5 +67,6 @@ public class Stage : MonoBehaviour
         }
 
     }
+
 
 }

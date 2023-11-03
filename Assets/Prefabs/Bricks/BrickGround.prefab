@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1395414306355554167}
   - component: {fileID: 7702116820870639294}
   - component: {fileID: 5507154938356933959}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BrickGround
   m_TagString: brickGround
   m_Icon: {fileID: 0}

@@ -4,27 +4,141 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.UIElements;
 
 public class Bot : Character
 {
+
+    //internal BrickGround LocateForBrick(ColorType colorType)
+    //{
+    //    BrickGround brick = null;
+
+    //    // Get the list of bricks for the specified color from the stage dictionary
+    //    if (stage.colorBricksDictionary.TryGetValue(colorType, out List<BrickGround> bricksForColor))
+    //    {
+    //        foreach (BrickGround brickGround in bricksForColor)
+    //        {
+
+    //            // Perform an overlap sphere check for each brick
+    //            Collider[] hitColliders = new Collider[1]; // You may need to adjust the size based on your needs
+
+    //            int numColliders = Physics.OverlapSphereNonAlloc(brickGround.transform.position, 1f, hitColliders, brickGroundLayer);
+
+    //            //Debug.Log("Checking brick: " + brickGround.colorType);
+
+    //            if (numColliders > 0)
+    //            {
+    //                // The brick of the same color is found, and you can break or perform other actions
+    //                brick = brickGround;
+    //                break;
+    //            }
+    //        }
+    //    }
+
+    //    return brick;
+    //}
+
+    //protected override void Start()
+    //{
+    //    agent = GetComponent<NavMeshAgent>();
+    //    botRigidbody = GetComponent<Rigidbody>();
+    //    ChangeState(new CollectState());
+    //}
+
+    //protected virtual void Update()
+    //{
+    //    if (currentState != null)
+    //    {
+    //        Debug.Log(currentState.ToString());
+
+    //        Debug.Log(CanBotMoveForward());
+
+    //        if(CanBotMoveForward() == true)
+    //        {
+    //            currentState.OnExecute(this);
+    //            base.Update();
+    //        }
+
+    //        else
+    //        {
+    //            botRigidbody.velocity = Vector3.zero;
+    //            return;
+    //        }
+
+    //    }
+    //}
+    //public bool CanBotMoveForward()
+    //{
+    //    // Get the bot's rigidbody
+
+    //    // Check if the bot is moving forward (velocity.z > 0)
+    //    if (this.botRigidbody.velocity.z > 0)
+    //    {
+    //        RaycastHit hit;
+
+    //        if (Physics.Raycast(transform.position + new Vector3(0f, 0f, 0.5f), Vector3.down, out hit, 5f, brickStairLayer))
+    //        {
+    //            BrickStair brickStair = hit.collider.gameObject.GetComponent<BrickStair>();
+
+    //            // Check if the bot has no bricks and the brick color doesn't match its color
+    //            if (brickCharList.Count == 0 && brickStair.colorType != this.colorType)
+    //            {
+    //                return false; // The bot can't move forward
+    //            }
+    //        }
+
+    //        // If none of the above conditions are met, the bot can move forward
+    //        return true;
+    //    }
+
+    //    // The bot is not moving forward, so it can move
+    //    return true;
+    //}
+
+    //internal void OnInit()
+    //{
+
+    //}
+
     public NavMeshAgent agent;
-    IState currentState;
-
-    private Vector3 destination;
-    public Level level;
-    public bool reachedDestination => Vector3.Distance(transform.position, destination) < 0.1f;
-    public Stage stage;
     private Rigidbody botRigidbody;
+    IState currentState;
+    public Level level;
+    public LayerMask brickGroundLayer;
+    public Stage stage;
+    public bool reachedDestination => Vector3.Distance(transform.position, destination) < 0.1f;
+    public Vector3 destination;
 
-    public void GoGetBrick(Vector3 destination) //ham dieu chinh bot di nhat brick
+
+
+    protected override void Start()
     {
-        this.destination = destination;
-        agent.SetDestination(destination);
+        agent = this.GetComponent<NavMeshAgent>();
+        botRigidbody = GetComponent<Rigidbody>();
+        ChangeState(new CollectState(stage,this));
     }
 
-    public void GoToFinishLine()
+    protected override void Update()
     {
-        agent.SetDestination(level.finishPoint.position);
+
+        if (currentState != null)
+        {
+            //Debug.Log(CanBotMoveForward());
+
+            //if (CanBotMoveForward() == true)
+            //{
+                //OnDrawGizmos();
+                currentState.OnExecute(this);
+                base.Update();
+            //}
+
+            //else
+            //{
+            //    botRigidbody.velocity = Vector3.zero;
+            //    return;
+            //}
+
+        }
     }
 
     public void ChangeState(IState state)
@@ -33,6 +147,7 @@ public class Bot : Character
         {
             currentState.OnExit(this);
         }
+
         currentState = state;
 
         if (currentState != null)
@@ -41,49 +156,7 @@ public class Bot : Character
         }
     }
 
-    internal BrickGround LocateForBrick(ColorType colorType) //ham de ket hop xac dinh vi tri cua brick cung mau can di nhat
-    {
-        BrickGround brick = null;
-        for (int i = 0; i < stage.bricks.Count; i++) //*
-        {
-            if (stage.bricks[i].colorType == colorType)
-            {
-                brick = stage.bricks[i];
 
-                break;
-            }
-        }
-
-        return brick;
-    }
-
-    protected override void Start()
-    {
-        //base.Start()
-        //stage = GameObject.FindObjectOfType<Stage>();
-        agent = GetComponent<NavMeshAgent>();
-        botRigidbody = GetComponent<Rigidbody>();
-        ChangeState(new PatrolState());
-    }
-
-    protected virtual void Update()
-    {
-        if (currentState != null)
-        {
-            if(CanBotMoveForward() == true)
-            {
-                currentState.OnExecute(this);
-                base.Update();
-            }
-            
-            else
-            {
-                botRigidbody.velocity = Vector3.zero;
-                return;
-            }
-
-        }
-    }
     public bool CanBotMoveForward()
     {
         // Get the bot's rigidbody
@@ -114,6 +187,33 @@ public class Bot : Character
 
     internal void OnInit()
     {
-        
+
+    }
+
+    public BrickGround FindBrick(ColorType colorType)
+    {
+        BrickGround brick = null;
+        foreach(BrickGround brickGround in Stage.Instance.bricks)
+        {
+            if(brickGround.colorType == colorType)
+            {
+                Collider[] hitColliders = new Collider[1];
+                int numColliders = Physics.OverlapSphereNonAlloc(brickGround.transform.position, 10f, hitColliders, brickGroundLayer);
+
+                if(numColliders > 0)
+                {
+                    brick = brickGround;
+                    break;
+                }
+            }
+
+        }
+
+        return brick;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, 10f);
     }
 }

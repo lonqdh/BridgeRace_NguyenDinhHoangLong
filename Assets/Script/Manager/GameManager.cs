@@ -6,6 +6,7 @@ public enum GameState { MainMenu = 0, Gameplay = 1, Finish = 2 };
 public class GameManager : Singleton<GameManager>
 {
     private GameState state;
+    public Camera camera;
 
     private void Awake()
     {
@@ -21,4 +22,6 @@ public class GameManager : Singleton<GameManager>
     {
         return state == gameState;
     }
+
+
 }
